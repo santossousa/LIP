@@ -17,8 +17,7 @@ public class AnalisadorLexico {
 	private AnalisadorSintatico sint;
 
 	/* Vetor de checagem */
-	public static final String[] RESERVADAS = { "RETURN", "DO", " ' ", " ' ", "WHILE", "ELSE", "FOR", "INT", "FLOAT",
-			"&&", "OR", "CHAR" };
+	public static final String[] RESERVADAS = { "DO", "WHILE", "INT"};
 
 	public void SCANNER(String arquivo) throws IOException, NovaException {
 		String charArray = ""; // String de todos os chars encontrados sem os espaços
@@ -51,7 +50,7 @@ public class AnalisadorLexico {
 
 				}
 
-				else if ((int) linha.charAt(i) > 31 && cont == 0) { // remove os espaços (ASCII = 32)
+				 if ((int) linha.charAt(i) > 31 && cont == 0) { // remove os espaços (ASCII = 32)
 					charArray = charArray.concat(Character.toString(linha.charAt(i)));
 					// concatena com a String de chars
 				}
@@ -61,11 +60,7 @@ public class AnalisadorLexico {
 			linha = lerArq.readLine(); // lê da segunda linha em diante
 		}
 
-		/*
-		 * if(cont != 0){ //erro relacionado a comentários throw new
-		 * NovaException("ERRO 1: Identificador ou símbolo invalido, verifique os comentários"
-		 * ); }
-		 */
+		
 
 		arq.close(); // fim de leitura do arquivo
 
@@ -119,12 +114,7 @@ public class AnalisadorLexico {
 						tokenFila.add(token);
 					}
 					break;
-
-				case '&':
-					token = new Token("&", "", linhax);
-					tokenFila.add(token);
-					compara = "";
-					break;
+				
 
 				case '(':
 					token = new Token("(", "", linhax);
@@ -204,6 +194,15 @@ public class AnalisadorLexico {
 							compara = "";
 						}
 					}
+				case '&':
+					if(tokenFila.peekLast().getId().equals("ESPACO")) {
+						if(charArray.charAt(i+ 1) == '&') {
+							compara = compara.concat(Character.toString(Character.toUpperCase(charArray.charAt(i))));
+							token = new Token(compara,"",linhax);
+							tokenFila.add(token);
+							compara = "";
+						}
+					}
 					break;
 				case '=':
 					if (tokenFila.peekLast().getId().equals("ESPACO")) {
@@ -236,8 +235,14 @@ public class AnalisadorLexico {
 					}
 					break;
 				case '|':
-					linhax += 1;
-					compara = "";
+					if(tokenFila.peekLast().getId().equals("ESPACO")) {
+						if(charArray.charAt(i+ 1) == '|') {
+							compara = compara.concat(Character.toString(Character.toUpperCase(charArray.charAt(i))));
+							token = new Token(compara,"",linhax);
+							tokenFila.add(token);
+							compara = "";
+						}
+					}
 					break;
 				default:
 					compara = compara.concat(Character.toString(Character.toUpperCase(charArray.charAt(i))));

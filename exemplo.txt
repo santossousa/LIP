@@ -1,13 +1,14 @@
 int main (){
-
-	do {
-	}
-	while (r != 1);
+	do{}
+	while(r != 3);
+	
+	do{}
+	while ((r != 1) && (e <= 1));
 	do {
 	
 	}
-	while (e != 1);
-
+	while((e > 1) || (e != 2));
+	
 
 
 }
